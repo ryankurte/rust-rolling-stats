@@ -5,13 +5,17 @@ use core::ops::AddAssign;
 extern crate num_traits;
 use num_traits::{float::Float, identities::Zero, identities::One, cast::FromPrimitive};
 
+#[macro_use]
+extern crate serde;
+use serde::{Serialize, Deserialize};
+
 /// Stats is an object that calculates continuous min/max/mean/deviation for tracking of time varying statistics
 /// 
 /// 
 /// See: https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_Online_algorithm for the algorithm
+
+#[derive(Serialize, Deserialize)]
 pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug> {
-    /// Number of values collected
-    pub count: usize,
     /// Minimum value
     pub min:     T,
     /// Maximum value
@@ -21,6 +25,10 @@ pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq +
     /// Standard deviation of sample
     pub std_dev: T,
 
+    /// Number of values collected
+    count: usize,
+
+    /// Internal mean squared for algo
     mean2:   T,
 }
 
