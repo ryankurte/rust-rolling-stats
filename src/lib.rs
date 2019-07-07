@@ -14,7 +14,7 @@ use serde::{Serialize, Deserialize};
 /// 
 /// See: https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_Online_algorithm for the algorithm
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug> {
     /// Minimum value
     pub min:     T,
