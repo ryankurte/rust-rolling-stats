@@ -6,6 +6,8 @@ extern crate num_traits;
 use num_traits::{float::Float, identities::Zero, identities::One, cast::FromPrimitive};
 
 /// Stats is an object that calculates continuous min/max/mean/deviation for tracking of time varying statistics
+/// 
+/// 
 /// See: https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_Online_algorithm for the algorithm
 pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug> {
     /// Number of values collected
@@ -26,10 +28,12 @@ impl <T> Stats<T>
 where
     T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug,
 {   
+    /// Create a new rolling-stats object
     pub fn new() -> Stats<T> {
         Stats{count: 0, min: T::zero(), max: T::zero(), mean: T::zero(), std_dev: T::zero(), mean2: T::zero()}
     }
 
+    /// Update the rolling-stats object
     pub fn update(&mut self, value: T) {
         // Track min and max
         if value > self.max || self.count == 0 {
