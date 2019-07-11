@@ -1,6 +1,6 @@
 [package]
 name = "rolling-stats"
-version = "0.2.1"
+version = "0.3.0"
 description = "Rolling statistics calculations (min/max/mean/std_dev) over arbitrary floating point numbers based on Welford's Online Algorithm" 
 authors = ["Ryan Kurte <ryankurte@gmail.com>"]
 repository = "https://github.com/ryankurte/rust-rolling-stats"
