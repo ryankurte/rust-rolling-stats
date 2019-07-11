@@ -26,9 +26,11 @@ pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq +
     pub std_dev: T,
 
     /// Number of values collected
+    #[serde(skip)]
     count: usize,
 
     /// Internal mean squared for algo
+    #[serde(skip)]
     mean2:   T,
 }
 
