@@ -2,18 +2,14 @@
 use core::fmt::Debug;
 use core::ops::AddAssign;
 
-extern crate num_traits;
 use num_traits::{float::Float, identities::Zero, identities::One, cast::FromPrimitive};
 
-#[macro_use]
-extern crate serde;
 use serde::{Serialize, Deserialize};
 
-/// Stats is an object that calculates continuous min/max/mean/deviation for tracking of time varying statistics
+/// Stats object calculates continuous min/max/mean/deviation for tracking of time varying statistics.
 /// 
-/// 
-/// See: https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_Online_algorithm for the algorithm
-
+/// See: https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_Online_algorithm for
+/// Details of the underlying algorithm.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug> {
     /// Minimum value
@@ -27,23 +23,41 @@ pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq +
 
     /// Number of values collected
     #[serde(skip)]
-    count: usize,
+    pub count: usize,
 
     /// Internal mean squared for algo
     #[serde(skip)]
     mean2:   T,
 }
 
+use core::fmt;
+
+impl <T> fmt::Display for Stats<T>
+where
+    T: fmt::Display + Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let precision = f.precision().unwrap_or(2);
+
+        write!(f, "(avg: {:.precision$}, std_dev: {:.precision$}, min: {:.precision$}, max: {:.precision$}, count: {})", self.mean, self.std_dev, self.min, self.max, self.count, precision=precision)
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Info {
+
+}
+
 impl <T> Stats<T> 
 where
     T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug,
 {   
-    /// Create a new rolling-stats object
+    /// Create a new stats object
     pub fn new() -> Stats<T> {
         Stats{count: 0, min: T::zero(), max: T::zero(), mean: T::zero(), std_dev: T::zero(), mean2: T::zero()}
     }
 
-    /// Update the rolling-stats object
+    /// Update the stats object
     pub fn update(&mut self, value: T) {
         // Track min and max
         if value > self.max || self.count == 0 {
@@ -70,6 +84,38 @@ where
             self.std_dev = (self.mean2 / (count - T::one())).sqrt();
         }
     }
+
+    /// Merge a set of stats objects for analysis
+    /// This performs a weighted averaging across the provided stats object, the output
+    /// object should not be updated further.
+    pub fn merge<S: Iterator<Item=Stats<T>>>(stats: S) -> Stats<T> {
+        let mut merged = Stats::new();
+
+        for s in stats {
+            // Track min and max
+            if s.max > merged.max || merged.count == 0 {
+                merged.max = s.max;
+            }
+            if s.min < merged.min || merged.count == 0 {
+                merged.min = s.min;
+            }
+
+            let merged_count = T::from_usize(merged.count).unwrap();
+            let s_count = T::from_usize(s.count).unwrap();
+
+            if merged.count > 0 {
+                merged.mean = (merged.mean * merged_count + s.mean * s_count) / (merged_count + s_count);
+                merged.std_dev = (merged.std_dev * merged_count + s.std_dev * s_count) / (merged_count + s_count);
+                merged.count += s.count;
+            } else {
+                merged.mean = s.mean;
+                merged.std_dev = s.std_dev;
+                merged.count = s.count;
+            }
+        }
+
+        merged
+    }
 }
 
 
@@ -77,7 +123,6 @@ where
 mod tests {
     use super::*;
 
-    extern crate float_cmp;
     use float_cmp::ApproxEqUlps;
 
     #[test]
