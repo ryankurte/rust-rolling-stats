@@ -1,38 +1,39 @@
-
 use core::fmt::Debug;
 use core::ops::AddAssign;
 
-use num_traits::{float::Float, identities::Zero, identities::One, cast::FromPrimitive};
+use num_traits::{cast::FromPrimitive, float::Float, identities::One, identities::Zero};
 
-use serde::{Serialize, Deserialize};
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
 /// Stats object calculates continuous min/max/mean/deviation for tracking of time varying statistics.
-/// 
+///
 /// See: https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_Online_algorithm for
 /// Details of the underlying algorithm.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug)]
 pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug> {
     /// Minimum value
-    pub min:     T,
+    pub min: T,
     /// Maximum value
-    pub max:     T,
+    pub max: T,
     /// Mean of sample set
-    pub mean:    T,
+    pub mean: T,
     /// Standard deviation of sample
     pub std_dev: T,
 
     /// Number of values collected
-    #[serde(skip)]
+    #[cfg_attr(feature = "serde", serde(skip))]
     pub count: usize,
 
     /// Internal mean squared for algo
-    #[serde(skip)]
-    mean2:   T,
+    #[cfg_attr(feature = "serde", serde(skip))]
+    mean2: T,
 }
 
 use core::fmt;
 
-impl <T> fmt::Display for Stats<T>
+impl<T> fmt::Display for Stats<T>
 where
     T: fmt::Display + Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug,
 {
@@ -43,18 +44,20 @@ where
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Info {
-
-}
-
-impl <T> Stats<T> 
+impl<T> Stats<T>
 where
     T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug,
-{   
+{
     /// Create a new stats object
     pub fn new() -> Stats<T> {
-        Stats{count: 0, min: T::zero(), max: T::zero(), mean: T::zero(), std_dev: T::zero(), mean2: T::zero()}
+        Stats {
+            count: 0,
+            min: T::zero(),
+            max: T::zero(),
+            mean: T::zero(),
+            std_dev: T::zero(),
+            mean2: T::zero(),
+        }
     }
 
     /// Update the stats object
@@ -70,7 +73,7 @@ where
         // Increment counter
         self.count += 1;
         let count = T::from_usize(self.count).unwrap();
-        
+
         // Calculate mean
         let delta: T = value - self.mean;
         self.mean += delta / count;
@@ -88,7 +91,7 @@ where
     /// Merge a set of stats objects for analysis
     /// This performs a weighted averaging across the provided stats object, the output
     /// object should not be updated further.
-    pub fn merge<S: Iterator<Item=Stats<T>>>(stats: S) -> Stats<T> {
+    pub fn merge<S: Iterator<Item = Stats<T>>>(stats: S) -> Stats<T> {
         let mut merged = Stats::new();
 
         for s in stats {
@@ -104,8 +107,10 @@ where
             let s_count = T::from_usize(s.count).unwrap();
 
             if merged.count > 0 {
-                merged.mean = (merged.mean * merged_count + s.mean * s_count) / (merged_count + s_count);
-                merged.std_dev = (merged.std_dev * merged_count + s.std_dev * s_count) / (merged_count + s_count);
+                merged.mean =
+                    (merged.mean * merged_count + s.mean * s_count) / (merged_count + s_count);
+                merged.std_dev = (merged.std_dev * merged_count + s.std_dev * s_count)
+                    / (merged_count + s_count);
                 merged.count += s.count;
             } else {
                 merged.mean = s.mean;
@@ -117,7 +122,6 @@ where
         merged
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -135,7 +139,7 @@ mod tests {
         }
 
         assert_eq!(s.count, vals.len());
-        
+
         assert_eq!(s.min, 1.0);
         assert_eq!(s.max, 5.0);
 
