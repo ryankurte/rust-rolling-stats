@@ -3,13 +3,15 @@ use core::ops::AddAssign;
 
 use num_traits::{cast::FromPrimitive, float::Float, identities::One, identities::Zero};
 
+#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// Stats object calculates continuous min/max/mean/deviation for tracking of time varying statistics.
 ///
 /// See: https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_Online_algorithm for
 /// Details of the underlying algorithm.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug)]
 pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug> {
     /// Minimum value
     pub min: T,
@@ -21,11 +23,11 @@ pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq +
     pub std_dev: T,
 
     /// Number of values collected
-    #[serde(skip)]
+    #[cfg_attr(feature = "serde", serde(skip))]
     pub count: usize,
 
     /// Internal mean squared for algo
-    #[serde(skip)]
+    #[cfg_attr(feature = "serde", serde(skip))]
     mean2: T,
 }
 
