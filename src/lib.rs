@@ -42,9 +42,6 @@ where
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Info {}
-
 impl<T> Stats<T>
 where
     T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug,
