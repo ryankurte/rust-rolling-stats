@@ -145,5 +145,15 @@ mod tests {
 
         assert!(s.mean.approx_eq_ulps(&3.0, 2));
         assert!(s.std_dev.approx_eq_ulps(&1.5811388, 2));
+        
+        let s2: Stats<f32> = Stats::new();
+        let s3 = Stats::<f32>::merge(vec![s, s2].into_iter());
+        assert_eq!(s3.count, vals.len());
+        
+        assert_eq!(s3.min, 1.0);
+        assert_eq!(s3.max, 5.0);
+        
+        assert!(s3.mean.approx_eq_ulps(&3.0, 2));
+        assert!(s3.std_dev.approx_eq_ulps(&1.5811388, 2));
     }
 }
