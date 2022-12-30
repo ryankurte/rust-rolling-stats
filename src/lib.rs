@@ -94,7 +94,11 @@ where
     pub fn merge<S: Iterator<Item = Stats<T>>>(stats: S) -> Stats<T> {
         let mut merged = Stats::new();
 
-        for s in stats {
+        for s in stats {        
+            if s.count == 0 {
+                continue
+            }
+
             // Track min and max
             if s.max > merged.max || merged.count == 0 {
                 merged.max = s.max;
