@@ -23,7 +23,6 @@ pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq +
     pub std_dev: T,
 
     /// Number of values collected
-    #[cfg_attr(feature = "serde", serde(skip))]
     pub count: usize,
 
     /// Internal mean squared for algo
