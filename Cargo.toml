@@ -1,11 +1,17 @@
 [package]
-authors = ["Ryan Kurte <ryankurte@gmail.com>"]
+authors = [
+  "Ryan Kurte <ryankurte@gmail.com>",
+  "Dilshod Tadjibaev @antimora",
+]
+categories = ["science"]
 description = "Rolling statistics calculations (min/max/mean/std_dev) over arbitrary floating point numbers based on Welford's Online Algorithm"
-edition = "2018"
+edition = "2021"
+keywords = ["statistics", "stats", "data"]
 license = "MIT / Apache-2.0"
 name = "rolling-stats"
+readme = "README.md"
 repository = "https://github.com/ryankurte/rust-rolling-stats"
-version = "0.6.0"
+version = "0.7.0"
 
 [features]
 default = ["std"]
@@ -14,9 +20,12 @@ std = [
 ]
 
 [dependencies]
-libm = {version = "0.2.0", optional = true}
-num-traits = {version = "0.2.15", default-features = false, features = ["libm"] }
-serde = {version = "1.0.163", features = ["derive"], optional = true}
+libm = {version = "0.2.7", optional = true}
+num-traits = {version = "0.2.15", default-features = false, features = ["libm"]}
+serde = {version = "1.0.163", features = ["derive"], optional = true, default-features = false}
 
 [dev-dependencies]
 float-cmp = "0.9.0"
+rand = "0.8.5"
+rand_distr = "0.4.3"
+rayon = "1.7.0"
