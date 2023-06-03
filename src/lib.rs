@@ -1,3 +1,7 @@
+#![cfg_attr(not(feature = "std"), no_std)]
+
+extern crate alloc;
+
 use core::fmt::Debug;
 use core::ops::AddAssign;
 
@@ -93,9 +97,9 @@ where
     pub fn merge<S: Iterator<Item = Stats<T>>>(stats: S) -> Stats<T> {
         let mut merged = Stats::new();
 
-        for s in stats {        
+        for s in stats {
             if s.count == 0 {
-                continue
+                continue;
             }
 
             // Track min and max
@@ -129,6 +133,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use alloc::vec;
+    use alloc::vec::Vec;
 
     use float_cmp::ApproxEqUlps;
 
@@ -148,14 +154,14 @@ mod tests {
 
         assert!(s.mean.approx_eq_ulps(&3.0, 2));
         assert!(s.std_dev.approx_eq_ulps(&1.5811388, 2));
-        
+
         let s2: Stats<f32> = Stats::new();
         let s3 = Stats::<f32>::merge(vec![s, s2].into_iter());
         assert_eq!(s3.count, vals.len());
-        
+
         assert_eq!(s3.min, 1.0);
         assert_eq!(s3.max, 5.0);
-        
+
         assert!(s3.mean.approx_eq_ulps(&3.0, 2));
         assert!(s3.std_dev.approx_eq_ulps(&1.5811388, 2));
     }
