@@ -2,7 +2,7 @@
 
 The `rolling-stats` library offers rolling statistics calculations (minimum, maximum, mean, standard
 deviation) over arbitrary floating point numbers. It uses Welford's Online Algorithm for these
-computations.
+computations. This crate is `no_std` compatible.
 
 For more information on the algorithm, visit
 [Algorithms for calculating variance](https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
@@ -99,17 +99,7 @@ println!("{}", merged_stats);
 
 The following feature flags are available:
 
-- `std`: Enables the `std` crate. Enabled by default.
 - `serde`: Enables serialization and deserialization of the `Stats` struct via the `serde` crate.
-
-## `no_std` Compatibility
-
-This crate is `no_std` compatible, simply disable the default features in your `Cargo.toml`:
-
-```toml
-[dependencies]
-rolling-stats = { version = "0.7.0", default-features = false }
-```
 
 ## License
 
