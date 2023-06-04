@@ -65,7 +65,6 @@ pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq +
     pub count: usize,
 
     /// The square of the mean value. This is an internal value used in the calculation of the standard deviation.
-    #[cfg_attr(feature = "serde", serde(skip))]
     mean2: T,
 }
 
