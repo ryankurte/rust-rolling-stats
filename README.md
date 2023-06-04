@@ -11,7 +11,7 @@ on Wikipedia.
 ## Status
 
 [![GitHub tag](https://img.shields.io/github/tag/ryankurte/rust-rolling-stats.svg)](https://github.com/ryankurte/rust-rolling-stats)
-[![Build Status](https://travis-ci.com/ryankurte/rust-rolling-stats.svg?branch=master)](https://travis-ci.com/ryankurte/rust-rolling-stats)
+[![Build Status](https://github.com/ryankurte/rust-rolling-stats/actions/workflows/rust.yml/badge.svg)](https://github.com/ryankurte/rust-rolling-stats/actions/workflows/rust.yml/)
 [![Crates.io](https://img.shields.io/crates/v/rolling-stats.svg)](https://crates.io/crates/rolling-stats)
 [![Docs.rs](https://docs.rs/rolling-stats/badge.svg)](https://docs.rs/rolling-stats)
 
