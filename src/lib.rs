@@ -47,7 +47,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// ```
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 pub struct Stats<T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug> {
     /// The smallest value seen so far.
     pub min: T,
@@ -78,6 +78,15 @@ where
         let precision = f.precision().unwrap_or(2);
 
         write!(f, "(avg: {:.precision$}, std_dev: {:.precision$}, min: {:.precision$}, max: {:.precision$}, count: {})", self.mean, self.std_dev, self.min, self.max, self.count, precision=precision)
+    }
+}
+
+impl<T> Default for Stats<T>
+where
+    T: Float + Zero + One + AddAssign + FromPrimitive + PartialEq + Debug,
+{
+    fn default() -> Stats<T> {
+        Stats::new()
     }
 }
 
