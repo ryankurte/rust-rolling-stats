@@ -11,7 +11,7 @@ license = "MIT / Apache-2.0"
 name = "rolling-stats"
 readme = "README.md"
 repository = "https://github.com/ryankurte/rust-rolling-stats"
-version = "0.7.0"
+version = "0.8.0"
 
 [dependencies]
 libm = {version = "0.2.7", optional = true}
